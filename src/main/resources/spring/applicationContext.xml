@@ -9,6 +9,14 @@
     -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="cacheManager" ref="cacheManager"/>
+        <property name="realm" ref="jdbcRealm"></property>
+        <property name="authenticator" ref="modularRealmAuthenticator"></property>
+        <property name="realms">
+            <list>
+                <ref bean="jdbcRealm"></ref>
+                <ref bean="secondRealm"></ref>
+            </list>
+        </property>
     </bean>
 
 
@@ -24,6 +32,8 @@
              a specific Ehcache configuration to be used, specify that here.  If you don't, a default
              will be used.: -->
         <property name="cacheManagerConfigFile" value="classpath:spring/ehcache.xml"/>
+
+
     </bean>
 
 
@@ -31,7 +41,33 @@
        3. 配置 Realm
        3.1 直接配置实现了 org.apache.shiro.realm.Realm 接口的 bean
    -->
+
+    <!--制定凭证匹配器后HashedCredentialsMatcher，会将前台输入的密码进行md5加密-->
     <bean id="jdbcRealm" class="com.atguigu.shiro.realms.ShiroRealm">
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="MD5"></property>
+                <property name="hashIterations" value="1024"></property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="secondRealm" class="com.atguigu.shiro.realms.SecondRealm">
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="SHA1"></property>
+                <property name="hashIterations" value="1024"></property>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="modularRealmAuthenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+        <!--<property name="realms">
+            <list>
+                <ref bean="jdbcRealm"></ref>
+                <ref bean="secondRealm"></ref>
+            </list>
+        </property>-->
     </bean>
 
     <!--
@@ -60,9 +96,10 @@
     -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
-        <property name="loginUrl" value="/login.jsp"/>
+        <property name="loginUrl" value="/login"/>
         <property name="successUrl" value="/index.jsp"/>
         <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
+        <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"></property>
 
 
         <!--
@@ -74,19 +111,23 @@
         	4). roles 角色过滤器
         -->
 
-        <property name="filterChainDefinitions">
+        <!--请求被authc拦截，
+        如果状态未登录，就会被跳到登录页面，
+        登录成功后，会继续原请求页面，
+        除非原请求就是successurl，才去successurl-->
+        <!--<property name="filterChainDefinitions">
             <value>
                 /login.jsp = anon
-                <!--/shiro/login = anon
-                /shiro/logout = logout
+                /favicon.ico = anon
+                /user.jsp=roles[user]
+                /logout=logout
 
-                /user.jsp = roles[user]
-                /admin.jsp = roles[admin]-->
-
-                # everything else requires authentication:
                 /** = authc
             </value>
-        </property>
+        </property>-->
     </bean>
+
+    <bean id="filterChainDefinitionMapBuilder" class="com.atguigu.shiro.factory.FilterChainDefinitionMapBuilder"></bean>
+    <bean id="filterChainDefinitionMap" factory-bean="filterChainDefinitionMapBuilder" factory-method="buildFilterChainDefinitionMap"></bean>
 
 </beans>
