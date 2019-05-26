@@ -1,13 +1,18 @@
 package com.atguigu.shiro.realms;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.support.DelegatingSubject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.util.StringUtils;
@@ -47,13 +52,19 @@ public class ShiroRealm extends AuthorizingRealm {
     }
 
     public static void main(String[] args) {
-        String algorithmName="MD5";
+       /* String algorithmName="MD5";
         Object source="123456";
         Object salt=ByteSource.Util.bytes("admin");;
         int hashIterations=1024;
         SimpleHash result = new SimpleHash(algorithmName, source, salt, hashIterations);
-        System.out.println(result);
-
+        System.out.println(result);*/
+        SecurityManager securityManager=new DefaultSecurityManager();
+        SecurityUtils.setSecurityManager(securityManager);
+        Subject subject = SecurityUtils.getSubject();
+        Session session = subject.getSession();
+        System.out.println(session);
+        subject.logout();
+        System.out.println(subject);
     }
 
 
