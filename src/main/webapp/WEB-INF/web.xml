@@ -39,6 +39,52 @@
 
 
 
+  <!-- ————————————登录校验码配置—————————— -->
+  <servlet>
+    <servlet-name>Kaptcha</servlet-name>
+    <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
+    <init-param>
+      <param-name>kaptcha.border</param-name>
+      <param-value>no</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.font.color</param-name>
+      <param-value>black</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.char.length</param-name>
+      <param-value>4</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.char.space</param-name>
+      <param-value>5</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.background.clear.from</param-name>
+      <param-value>255,255,255</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.background.clear.to</param-name>
+      <param-value>255,255,255</param-value>
+    </init-param>
+    <init-param>
+      <description>图片宽度</description>
+      <param-name>kaptcha.image.width</param-name>
+      <param-value>135</param-value>
+    </init-param>
+    <init-param>
+      <description>图片高度</description>
+      <param-name>kaptcha.image.height</param-name>
+      <param-value>54</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Kaptcha</servlet-name>
+    <url-pattern>/Kaptcha.jpg</url-pattern>
+  </servlet-mapping>
+
+
+
   <!--
 	1. 配置  Shiro 的 shiroFilter.
 	2. DelegatingFilterProxy 实际上是 Filter 的一个代理对象. 默认情况下, Spring 会到 IOC 容器中查找和

@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Administrator
-  Date: 2019-05-23
-  Time: 23:14
-  To change this template use File | Settings | File Templates.
---%>
+<%@ include file="/WEB-INF/views/include/taglib.jsp" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -19,6 +13,19 @@
          <br><br>
          密碼：<input type="password" name="password">
          <br><br>
+
+         <div>
+             <input type="text" class="form-login width_code input-errow" id="validateCode"
+                    name="validateCode"
+                    placeholder="输入验证码">
+             <div>
+                 <img src="${ctx}/Kaptcha.jpg"
+                      id="kaptcha"
+                      onclick="this.src='${ctx}/Kaptcha.jpg?id='+Math.random()*100"
+                      title="点击变换验证码"/>
+             </div>
+         </div>
+
          <input type="submit" name="登陸">
      </form>
 </body>

@@ -13,6 +13,7 @@ public class FilterChainDefinitionMapBuilder {
 
                 /** = authc*/
         LinkedHashMap<String,String> map=new LinkedHashMap<>();
+        map.put("/**/Kaptcha*","anon");
         map.put("/login.jsp","anon");
         map.put("/favicon.ico","anon");
         map.put("/user.jsp","roles[user]");

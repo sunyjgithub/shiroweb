@@ -1,5 +1,8 @@
 package com.atguigu.shiro.realms;
 
+import com.atguigu.shiro.exception.VerfiicationCodeException;
+import com.atguigu.shiro.token.IDMLoginToken;
+import com.google.code.kaptcha.Constants;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -32,7 +35,18 @@ public class ShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 
-        UsernamePasswordToken uptoken= (UsernamePasswordToken) token;
+        IDMLoginToken uptoken = (IDMLoginToken) token;
+
+        //首先验证码进行验证
+        Session session = SecurityUtils.getSubject().getSession();
+        //获取申城的验证码
+        String code = (String) session.getAttribute(Constants.KAPTCHA_SESSION_KEY);
+
+        if (StringUtils.isEmpty(uptoken.getCaptcha()) || !uptoken.getCaptcha().equalsIgnoreCase(code)) {
+            throw new VerfiicationCodeException("验证码错误, 请重试.");
+        }
+
+
         String username=uptoken.getUsername();
 
         //根据表单用户名 获取用户信息
