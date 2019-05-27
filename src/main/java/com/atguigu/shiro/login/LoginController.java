@@ -1,5 +1,6 @@
 package com.atguigu.shiro.login;
 
+import com.atguigu.shiro.exception.VerfiicationCodeException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,10 @@ public class LoginController {
         }
         if (AuthenticationException.class.getName().equals(exceptionName)){
             model.addAttribute("errormsg","其他验正信息");
+        }
+
+        if(VerfiicationCodeException.class.getName().equals(exceptionName)){
+            model.addAttribute("errormsg","验证码错误");
         }
 
          return "login";
